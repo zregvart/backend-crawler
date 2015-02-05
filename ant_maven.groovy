@@ -65,7 +65,7 @@ def altListUp(url,pattern) {
         if(m.find() ) {
             l=a.hrefAttribute.length()-2;
             ver=a.hrefAttribute.getAt(0..l);
-            url = p.getFullyQualifiedUrl(a.hrefAttribute+"binaries/");
+            url = p.getFullyQualifiedUrl(a.hrefAttribute);
             HtmlPage pb = wc.getPage(url);
             return pb.getAnchors().collect { HtmlAnchor a1 ->
               n = pattern.matcher(a1.hrefAttribute)
@@ -86,6 +86,4 @@ def store(key,o) {
 }
 
 store("hudson.tasks.Ant.AntInstaller",  listUp("http://archive.apache.org/dist/ant/binaries/",  "ant-([0-9.]+)-bin.zip\$").sort ( sortingversion  ))
-store("hudson.tasks.Maven.MavenInstaller", listUp("http://archive.apache.org/dist/maven/binaries/","maven-([0-9.]+)(-bin)?.zip\$").plus(altListUp("http://archive.apache.org/dist/maven/maven-3/","maven-([0-9.]+)(-bin)?.zip\$")).unique(false) {
-        a ,b -> a.id <=> b.id
-}.sort(sortingversion))
+store("hudson.tasks.Maven.MavenInstaller", altListUp("http://repo1.maven.org/maven2/org/apache/maven/apache-maven/","maven-([0-9.]+)(-bin)?.zip\$").sort(sortingversion))
